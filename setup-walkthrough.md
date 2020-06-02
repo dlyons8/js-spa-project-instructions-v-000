@@ -47,6 +47,44 @@ This will generate a new rails project using Postgresql as the database. We spec
 
 The `config.api_only = true` option found in `config/application.rb` tells Rails that our app will be an **API only**. In other words, our API **will not generate any HTML** - instead, it will return JSON. The frontend is responsible for fetching the data as JSON and formatting it to show to the user. Read [this](https://www.w3schools.com/js/js_json_intro.asp) if you want to review what JSON is and why we use it.
 
+### Creating a Postgresql database for your App
+
+Once you've setup Postgres, run the following command in your Terminal:
+
+`psql`
+
+`psql` will take you into the Postrgesql command line.
+
+If you get an error, you didn't set up Postgres properly.
+
+Otherwise run \list to see all the databases on your server.
+
+Create the databases with the following commands:
+
+CREATE DATABASE <my_app_name>_development;
+CREATE DATABASE <my_app_name>_test;
+
+Run \list against to confirm that they were added.
+
+In `walkthrough-backend/config/database.yml` you'll find
+
+```
+development:
+  <<: *default
+  database: <my_app_name>_development
+```
+
+and 
+
+```
+test:
+  <<: *default
+  database: <my_app_name>_test
+```
+Make sure the names of the databases in your database.yml file match your Postregsql app.
+
+Note: Use underscore instead of dashes when creating your databases, Postgresql will not allow you to create a database with a '-' in it.
+
 ### Configure CORS
 
 > [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) is a security feature that only allows API calls from known origins. For example, if someone tried to use some malicious JavaScript to steal your bank information and your bank allowed API calls from anywhere, this could be a bad news bears™️ situation.
@@ -76,6 +114,8 @@ end
 ```
 
 (This snippet is from the [documentation for the rack-cors gem](https://github.com/cyu/rack-cors).)
+
+Inside the `allow` block, if the `origins` has `'example.com'` change it to `origins '*'`.
 
 Inside the `allow` block, `origins '*'` means we are allowing requests from **all** origins and are allowing `[:get, :post, :patch, :delete]` requests to the API. Read [this](https://www.w3schools.com/tags/ref_httpmethods.asp) if you need a refresher on HTTP methods.
 
